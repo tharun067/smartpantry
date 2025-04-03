@@ -11,25 +11,6 @@ function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
-    useEffect(() => {
-        const handleAuthState = async () => {
-            setLoading(true);
-            try {
-                if (session?.user) {
-                    setUser(session.user);
-                } else {
-                    const userData = await fetch('/api/auth/me');
-                    setUser(userData);
-                }
-            } catch (error) {
-                console.log("Auth State error", error);
-                setUser(null);
-            } finally {
-                setLoading(false);
-            }
-        }
-        handleAuthState();
-    }, [session]);
     const register = async (userData) => {
         try {
             const response = await fetch('/api/auth/register', {
