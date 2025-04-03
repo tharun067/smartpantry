@@ -46,6 +46,7 @@ function ContainerCard({container=[],onUpdateWeight}) {
   const getStatusColor = () => {
     if (container.currentWeight <= container.alertWeight) return "bg-red-500";
     if (percentage < 30) return "bg-yellow-500";
+    if (container.currentWeight == container.maxWeight) return "bg-blue-500";
     return "bg-green-500";
   };
 
