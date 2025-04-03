@@ -3,44 +3,43 @@
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 
-function LoginPage() {
-    const [emailOrPhone, setEmailOrPhone] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+function LoginForm() {
+  const [emailOrPhone, setEmailOrPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
-    async function handleSubmit(e) {
-        e.preventDefault();
-        setLoading(true);
-        setError("");
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-        try {
-            const result = await signIn("credentials", {
-                emailOrPhone,
-                password,
-                redirect: false,
-                callbackUrl
-            });
+    try {
+      const result = await signIn("credentials", {
+        emailOrPhone,
+        password,
+        redirect: false,
+        callbackUrl
+      });
 
-            if (result?.error) {
-                setError(result.error);
-            } else if (result?.url) {
-                router.push(result.url);
-            } else {
-                // Fallback redirect if NextAuth doesn't return URL
-                router.push(callbackUrl);
-            }
-        } catch (error) {
-            setError(error.message || "Login failed");
-        } finally {
-            setLoading(false);
-        }
+      if (result?.error) {
+        setError(result.error);
+      } else if (result?.url) {
+        router.push(result.url);
+      } else {
+        router.push(callbackUrl);
+      }
+    } catch (error) {
+      setError(error.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -48,15 +47,10 @@ function LoginPage() {
         <h2 className="text-3xl font-extrabold text-center text-gray-900">
           SmartPantry Login
         </h2>
-        {error && (
-          <div className="text-red-500 text-center">{error}</div>
-        )}
+        {error && <div className="text-red-500 text-center">{error}</div>}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label
-              htmlFor="emailOrPhone"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="emailOrPhone" className="block text-sm font-medium text-gray-700">
               Email or Phone
             </label>
             <input
@@ -70,10 +64,7 @@ function LoginPage() {
             />
           </div>
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
             <input
@@ -98,10 +89,7 @@ function LoginPage() {
           </div>
         </form>
         <div className="text-center">
-          <Link
-            href="/register"
-            className="text-indigo-600 hover:text-indigo-500"
-          >
+          <Link href="/register" className="text-indigo-600 hover:text-indigo-500">
             Don't have an account? Register
           </Link>
         </div>
@@ -110,4 +98,12 @@ function LoginPage() {
   );
 }
 
-export default LoginPage
+function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+export default LoginPage;
