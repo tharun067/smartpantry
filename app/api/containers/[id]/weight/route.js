@@ -1,4 +1,4 @@
-import { NextResponse } from 'next-server';
+import { NextResponse } from 'next/server';
 import { connectToDB } from '@/lib/mongodb';
 import Container from '@/models/Container';
 import Notification from '@/models/Notification';

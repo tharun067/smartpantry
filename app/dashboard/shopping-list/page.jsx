@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { toast } from "sonner";
 import { Check, RotateCw, Printer, Copy } from "lucide-react";
+import Link from "next/link";
 
 function ShoppingListPage() {
   const { data: session } = useSession();
